@@ -1,7 +1,8 @@
 # df_tools.py - FEniCS related convenience functions
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
-# Juni  5 2012
+# Created: June 5 2012
+# Last modified: <2017-09-14 11:04:03>
 
 from __future__ import division
 import numpy as np

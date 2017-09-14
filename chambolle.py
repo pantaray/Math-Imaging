@@ -1,19 +1,15 @@
 # chambolle.py - Solve nonlinear TV-denoising using Chambolle's projection algorithm
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
-# August 22 2012
+# Created: August 22 2012
+# Last modified: <2017-09-14 11:02:15>
 
 from __future__ import division
 
 import numpy as np
 import scipy as sp
 
-# If the mypy package is present, import fidop2d from there, otherwise difftools.py has to be in the same
-# directory as this file
-try:
-    from mypy.difftools import fidop2d
-except:
-    from difftools import fidop2d
+from difftools import fidop2d
 
 ##########################################################################################
 def chambolle(ut, Dx=None, Dy=None, mu=1.0e-5, dt=0.25, itmax=10000, tol=1.0e-3):

@@ -1,7 +1,8 @@
 # myvec.py - Plotting tools for vector fields
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
-# June 13 2012
+# Created: June 13 2012
+# Last modified: <2017-09-14 11:09:25>
 
 from __future__ import division
 import matplotlib.pyplot as plt

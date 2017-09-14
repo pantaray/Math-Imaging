@@ -1,7 +1,8 @@
 # makeimg.py - Create 2D gray-scale test images
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
-# June  6 2012
+# Created: June  6 2012
+# Last modified: <2017-09-14 11:07:50>
 
 from __future__ import division
 

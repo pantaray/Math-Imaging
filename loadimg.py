@@ -1,7 +1,8 @@
 # loadimg.py - Load 2D gray-scale test images
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
-# December 23 2014
+# Created: December 23 2014
+# Last modified: <2017-09-14 11:07:31>
 
 from __future__ import division
 import numpy as np

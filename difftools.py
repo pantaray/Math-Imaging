@@ -1,7 +1,8 @@
 # difftools.py - Several useful utilities for numerical differentiation
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
-# June 13 2012
+# Created: June 13 2012
+# Last modified: <2017-09-14 11:04:42>
 
 from __future__ import division
 import numpy as np

@@ -1,7 +1,8 @@
 # tools1d.py - Stuff that makes one-dimensional life easier
 # 
-# Author: Stefan Fuertinger
-# Mai 10 2012
+# Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
+# Created: May 10 2012
+# Last modified: <2017-09-14 11:10:02>
 
 from __future__ import division
 import numpy as np

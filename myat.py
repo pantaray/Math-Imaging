@@ -1,7 +1,8 @@
 # myat.py - Implementation of an Ambrosio-Tortorelli segmentation
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
-# August 22 2012
+# Created: August 22 2012
+# Last modified: <2017-09-14 11:08:26>
 
 from __future__ import division
 
@@ -10,12 +11,7 @@ import matplotlib.pyplot as plt
 from numpy.linalg import norm
 from scipy.sparse import spdiags, linalg
 
-# If the mypy package is present, import fidop2d from there, otherwise difftools.py has to be 
-# in the same directory as this file
-try:
-    from mypy.difftools import fidop2d
-except:
-    from difftools import fidop2d
+from difftools import fidop2d
 
 ##########################################################################################
 def myat(f,ep,nu=1,de=1,la=1,tol=1e-4,itmax=100,iplot=False,Dx=None,Dy=None,Lh=None):
