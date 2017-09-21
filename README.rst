@@ -8,7 +8,6 @@ The implemented routines provide functionality for the following image processin
 
 * de-noising
 * segmentation
-* manipulation
 * generation of prototype test images
 * assembly of discrete differential operators on regular image domains
 * visualization of two-dimensional (displacement) vector fields
