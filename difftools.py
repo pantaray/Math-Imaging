@@ -2,7 +2,7 @@
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
 # Created: June 13 2012
-# Last modified: <2017-09-14 11:04:42>
+# Last modified: <2017-09-21 12:08:48>
 
 from __future__ import division
 import numpy as np
@@ -15,13 +15,13 @@ def fidop2d(N, drt='xy', fds='c'):
 
     Parameters
     ----------
-    N : integer
+    N : int
         Positive integer holding the grid dimension (has to be square, i.e.
         `N`-by-`N`!)
-    drt : string
+    drt : str
         String determining the direction of the discrete derivatives. 
         Can be either 'x', 'y' or 'xy'. 
-    fds : string
+    fds : str
         String determining the employed finite difference scheme. Can be 
         either 'c' for centered, 'f' for forward or 'b' for backward. 
        
@@ -34,8 +34,11 @@ def fidop2d(N, drt='xy', fds='c'):
 
     Examples
     --------
-    The command `Dx,Dy = fidop2d(N)` returns the sparse `N**2`-by-`N**2` 
-    matrices `Dx` and `Dy` such that `Dh` defined by
+    The command 
+
+    >>> Dx,Dy = fidop2d(N) 
+
+    returns the sparse `N**2`-by-`N**2` matrices `Dx` and `Dy` such that `Dh` defined by
 
     >>> import numpy as np
     >>> Dh = np.hstack([Dx,Dy])
@@ -47,14 +50,20 @@ def fidop2d(N, drt='xy', fds='c'):
     in `y`-direction. The spacing between points in each direction is assumed to be one 
     (i.e. the step size `h = 1`). 
     
-    The command `D = fidop2d(N,drt)` returns the sparse `N**2`-by-`N**2` matrix `D` corresponding
-    to the discrete derivative operator in direction `drt`
-    in lexicographic ordering. The string `drt` has to be either 'x' (default)
+    The command 
+
+    >>> D = fidop2d(N,drt) 
+
+    returns the sparse `N**2`-by-`N**2` matrix `D` corresponding to the discrete derivative 
+    operator in direction `drt` in lexicographic ordering. The string `drt` has to be either 'x' (default)
     , 'y' or 'xy'. Note: only 'xy' will return two matrices, namely `Dx`, `Dy`. 
 
-    The command `D = fidop2d(N,drt,fds)` returns sparse the `N**2`-by-`N**2` matrix `D` corresponding
-    to the discrete derivative operator in direction `drt`
-    in lexicographic ordering using the finite difference scheme `fds`. 
+    The command 
+
+    >>> D = fidop2d(N,drt,fds) 
+
+    returns sparse the `N**2`-by-`N**2` matrix `D` corresponding to the discrete derivative 
+    operator in direction `drt` in lexicographic ordering using the finite difference scheme `fds`. 
     The string `fds` can either be 'c' (centered differences, in cells, default), 
     'f' (forward differences, in interfaces) or 'b' (backward differences, in interfaces). 
 
@@ -107,21 +116,31 @@ def fidop2d(N, drt='xy', fds='c'):
     `Div_h ~ -Dh.T` as approximation for the divergence. 
     """
 
-    # Check correctness of input
-    try: tmp = int(N) != N
-    except TypeError: raise TypeError("N has to be a positive integer")
-    if (tmp): raise ValueError("N has to be a positive integer")
-    if N <= 0: raise ValueError("N has to be a positive integer")
-
+    # Sanity checks for `N`
+    if not np.isscalar(N) or not plt.is_numlike(N) or not np.isreal(N).all():
+        raise TypeError("Input `N` must be a real scalar!")
+    if not np.isfinite(N):
+        raise TypeError("Input `N` must be finite!")
+    if round(N) != N:
+        raise TypeError("`N` has to be a positive integer!")
+    if N <= 1:
+        raise ValueError("`N` has to be greater than 1!")
+    
+    # Sanity checks for `drt`
+    if not isinstance(drt,(str,unicode)):
+        raise TypeError("Input `drt` has to be a string!")
     if drt != 'x' and drt != 'y' and drt != 'xy':
-        raise ValueError("drt has to be x, y or xy")
+        raise ValueError("Input `drt` has to be either 'x', 'y' or 'xy'")
     elif drt == 'x' or drt == 'y':
         myout = 1
     else:
         myout = 2
 
+    # Sanity checks for `fds`
+    if not isinstance(fds,(str,unicode)):
+        raise TypeError("Input `fds` has to be a string!")
     if fds != 'c' and fds != 'b' and fds != 'f':
-        raise ValueError("fds has to be c (centered), b (backward) or f (forward)")
+        raise ValueError("Input `fds` has to be either 'c' (centered), 'b' (backward) or 'f' (forward)")
 
     # Initialize vector of ones needed to build matrices
     e = np.ones((1,N));
@@ -167,7 +186,7 @@ def myff2n(n):
 
     Parameters
     ----------
-    n : integer
+    n : int
         Number of factors
        
     Returns
@@ -190,10 +209,14 @@ def myff2n(n):
     """
 
     # Check correctness of input
-    try: tmp = int(n) != n
-    except TypeError: raise TypeError("n has to be a positive integer")
-    if tmp: raise ValueError("n has to be a positive integer")
-    if n <= 0: raise ValueError("n has to be a positive integer")
+    if not np.isscalar(n) or not plt.is_numlike(n) or not np.isreal(n).all():
+        raise TypeError("Input `n` must be a real scalar!")
+    if not np.isfinite(n):
+        raise TypeError("Input `n` must be finite!")
+    if round(n) != n:
+        raise TypeError("`n` has to be a positive integer!")
+    if n <= 0:
+        raise ValueError("`n` has to be greater than 0!")
 
     # Output array dff2 has 2^n rows 
     rows = 2**n

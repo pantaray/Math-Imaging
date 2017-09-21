@@ -2,7 +2,7 @@
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
 # Created: June 13 2012
-# Last modified: <2015-04-03 17:28:04>
+# Last modified: <2017-09-21 11:15:41>
 
 from __future__ import division
 
@@ -49,12 +49,12 @@ def imwrite(figobj,fstr,dpi=None):
     savefig : in the `Matplotlib documentation <http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.savefig>`_
     """
 
-    # Check if figobj is really a figure
+    # Check if `figobj` is really a figure
     if type(figobj).__name__ != "Figure":
         raise TypeError("figobj has to be a valid matplotlib Figure object!")
 
-    # Make sure fstr doesn't contain weirdness and points to an existing place
-    if str(fstr) != fstr:
+    # Make sure `fstr` doesn't contain weirdness and points to an existing place
+    if not isinstance(fstr,(str,unicode)):
         raise TypeError("Output filename has to be a string!")
     fstr = str(fstr)
     if fstr.find("~") == 0:
@@ -92,10 +92,10 @@ def normalize(I,a=0,b=1):
         Array to be normalized
     a : float
         The lower normalization bound. 
-        By default `a = 0` (Note that it has to hold that `a < b`)
+        By default `a = 0` (`a` has to satisfy `a < b`)
     b : float
         The upper normalization bound. 
-        By default `b = 1` (Note that it has to hold that `a < b`)
+        By default `b = 1` (`b` has to satisfy `b < a`)
        
     Returns
     -------
@@ -112,7 +112,7 @@ def normalize(I,a=0,b=1):
                [ 12.        , -10.        ]])
     """
 
-    # Ensure that I is a NumPy-ndarray
+    # Ensure that `I` is a NumPy-ndarray
     try: tmp = I.size == 1
     except TypeError: raise TypeError('I has to be a NumPy ndarray!')
     if (tmp): raise ValueError('I has to be a NumPy ndarray of size > 1!')
@@ -232,11 +232,9 @@ def recmovie(figobj=None, movie=None, savedir=None, fps=None):
     movie : str 
         Filename of the generated movie
     savedir : str
-        Directory `figobj` shall be saved
-        into or name of directory holding image files that 
-        to be converted to a movie
+        Output directory for video file or name of directory of/for source image files
     fps : int
-        Frames per second for the movie that is generated
+        Target frames per second
 
     Returns
     -------
@@ -244,14 +242,21 @@ def recmovie(figobj=None, movie=None, savedir=None, fps=None):
 
     Examples
     --------
-    The command `recmovie(figobj)` saves the Matplotlib figure-object `figobj` in the default directory
-    `_tmp` as png-image. If the default directory is empty the image will be named `_tmp0000.png`, 
+    The command 
+
+    >>> recmovie(figobj) 
+
+    saves the Matplotlib figure-object `figobj` in the default directory `_tmp` as png-image. 
+    If the default directory is empty the image will be named `_tmp0000.png`, 
     otherwise the highest number in the png-file-names incremented by one will be
     used as filename. 
 
-    Use `recmovie(figobj,savedir="somedir")` to save the Matplotlib figure-object `figobj` in the 
-    directory defined by the string `savedir`. If the directory does not exist, it will
-    be created. 
+    Use 
+
+    >>> recmovie(figobj,savedir="somedir") 
+
+    to save the Matplotlib figure-object `figobj` in the directory defined by the string 
+    `savedir`. If the directory does not exist, it will be created. 
     If the directory `savedir` is empty the image will be named `_tmp0000.png`, otherwise the 
     highest number in the png-file-names incremented by one will be used as filename. 
 
@@ -262,30 +267,42 @@ def recmovie(figobj=None, movie=None, savedir=None, fps=None):
     After the movie has been generated the default-directory `_tmp` and its contents 
     will be deleted. 
 
-    Use `recmovie(movie="somename")` to launch mencoder and generate an avi-movie 
-    composed of the png-images found in the default directory `_tmp`. 
+    Use 
+
+    >>> recmovie(movie="somename") 
+
+    to launch mencoder and generate an avi-video composed of the png-images found in the 
+    default directory `_tmp`. 
     The string `movie` will be used as filename for the generated movie (in the above example
     a file `somename.avi` will be created). 
     After the movie has been generated the default-directory `_tmp` and its contents 
-    will be deleted. Similarly `recmovie(savedir="somedir")` will generate an avi-movie 
-    composed of the png-images found in the directory specified by the string `savedir`. 
-    The movie's name will be composed the default prefix `_tmp` and the current 
+    will be deleted. Similarly 
+
+    >>> recmovie(savedir="somedir") 
+
+    will generate an avi-movie composed of the png-images found in the directory specified 
+    by the string `savedir`. The movie's name is given by the prefix `_tmp` and the current 
     date and time. 
     After the movie has been generated it will be moved to the directory `savedir`. If 
-    a movie-file of the same name exists in `savedir` a WARNING is printed and the movie 
-    will not be moved. Analogously, `recmovie(movie="somename",savedir="somedir") will
-    generate an avi-movie named "somename" composed of the png-images found in the 
-    directory specified by the string 
-    `savedir`. 
+    a movie-file of the same name exists in `savedir` a *WARNING* is printed and the movie 
+    will not be moved. Analogously, 
+
+    >>> recmovie(movie="somename",savedir="somedir") 
+
+    will generate an avi-movie named "somename" composed of the png-images found in the 
+    directory specified by the string `savedir`. 
     After the movie has been generated it will be moved to the directory `savedir`. If 
-    a movie-file of the same name exists in `savedir` a WARNING is printed and the movie 
+    a movie-file of the same name exists in `savedir` a *WARNING* is printed and the movie 
     will not be moved. 
 
-    Note: the command `recmovie(figobj,movie="somename",savedir="somedir")` will ONLY save the 
-    Matplotlib-figure-object `figobj` in the directory defined by the string `savdir`. The 
-    optional argument `movie` will be ignored. 
+    **Note:** the command 
 
-    Note: the default-directory, image-format and movie-type can be changed in the source code 
+    >>> recmovie(figobj,movie="somename",savedir="somedir") 
+
+    will ONLY save the Matplotlib-figure-object `figobj` in the directory defined by the 
+    string `savdir`. The optional argument `movie` will be ignored. 
+
+    **Note:** the default-directory, image-format and movie-type can be changed in the source code 
     by editing the variables `prefix`, `imgtype` and `movtype`. 
 
     See also
@@ -305,20 +322,20 @@ def recmovie(figobj=None, movie=None, savedir=None, fps=None):
     moviename   = "movie"+"_"+repr(now.hour)+repr(now.minute)+repr(now.second)
 
     # Assign defaults
-    if movie == None:
+    if movie is None:
         movie = moviename
-    if savedir == None:
+    if savedir is None:
         savedir = savedirname
-    if fps == None:
+    if fps is None:
         fps = fpsno
 
-    # Make sure figobj is actually a figure
+    # Make sure `figobj` is actually a figure
     if figobj != None:
         if type(figobj).__name__ != "Figure":
             raise TypeError("figobj has to be a valid Matplotlib Figure object!")
 
     # Check if movie filename makes sense and points to an existing location
-    if str(movie) != movie:
+    if not isinstance(movie,(str,unicode)):
         raise TypeError("Output filename for movie has to be a string!")
     movie = str(movie)
     if movie.find("~") == 0:
@@ -326,8 +343,8 @@ def recmovie(figobj=None, movie=None, savedir=None, fps=None):
     if not os.path.isdir(movie[:movie.rfind(os.sep)]):
         raise ValueError('Invalid path for output filename for movie: '+movie+'!')
 
-    # Make sure savedir exists
-    if str(savedir) != savedir:
+    # Make sure `savedir` exists
+    if not isinstance(savedir,(str,unicode)):
         raise TypeError('Output filename has to be a string!')
     savedir = str(savedir)
     if savedir.find("~") == 0:

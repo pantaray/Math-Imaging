@@ -2,7 +2,7 @@
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
 # Created: June 13 2012
-# Last modified: <2017-09-14 11:09:25>
+# Last modified: <2017-09-21 12:41:45>
 
 from __future__ import division
 import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ def myquiv(u,v):
     """
 
     # Check the input vector field
-    checkinput(u,v)
+    checkfield(u,v,varnames = ["u","v"])
 
     # Now do something
     N  = u.shape[0]
@@ -101,46 +101,12 @@ def makegrid(N,M=None,xmin=1,xmax=None,ymin=1,ymax=None):
     """
 
     # Sanity checks
-    # N
-    try: N/2.0
-    except: raise TypeError("N has to be a positive integer!")
-    if N <= 1: raise ValueError("N has to be greater than 1!")
-    if np.round(N) != N:
-        N = np.round(N)
-        print "WARNING: N has to be an integer - using round(N) = ",N," now..."
-
-    # M
-    if M == None:
-        M = N
-    if M!=N:
-        try: M/2.0
-        except: raise TypeError("M has to be a positive integer!")
-        if M <= 1: raise ValueError("M has to be greater than 1!")
-        if np.round(M) != M:
-            M = np.round(M)
-            print "WARNING: M has to be an integer - using round(M) = ",M," now..."
-
-    # xmin
-    if xmin != 1:
-        try: xmin/2.0
-        except: raise TypeError("xmin has to be a real number!")
-
-    # xmax
-    if xmax == None: xmax = N
-    try: xmax/2.0
-    except: raise TypeError("xmax has to be a real number!")
-    if xmax <= xmin: raise ValueError("xmax has to be greater than xmin!")
-
-    # ymin
-    if ymin != 1:
-        try: ymin/2.0
-        except: raise TypeError("ymin has to be a real number!")
-
-    # ymax
-    if ymax == None: ymax = M
-    try: ymax/2.0
-    except: raise TypeError("ymax has to be a real number!")
-    if ymax <= ymin: raise ValueError("ymax has to be greater than ymin!")
+    scalarcheck(N,"N",kind=int,bounds=[1,np.inf])
+    scalarcheck(M,"M",kind=int,bounds=[1,np.inf])
+    scalarcheck(xmin,"xmin")
+    scalarcheck(xmax,"xmax",bounds=[xmin,np.inf])
+    scalarcheck(ymin,"ymin")
+    scalarcheck(ymax,"ymax",bounds=[ymin,np.inf])
 
     # Compute stepsizes
     hx = (xmax - xmin)/(M-1)
@@ -193,39 +159,24 @@ def mygrid(u,v,x=None,y=None,rowstep=16,colstep=16,interpolation="lanczos"):
     """
 
     # Check the input vector field
-    checkinput(u,v)
+    checkfield(u,v,varnames=["u","v"])
     (M,N) = u.shape
 
     # Check the grid
-    if (x == None and y != None) or (x != None and y == None):
-        print "WARNING: Only x- or y-grid-data specified - switching to default domain [1,N]-by-[1,N]..."
+    if (x is None and y != None) or (x != None and y == None):
+        print "WARNING: Only x- or y-grid-data specified - switching to default domain `[1,N]`-by-`[1,N]`..."
         x,y = makegrid(N,M=M)
     elif x == None:
         x,y = makegrid(N,M=M)
     else:
+        checkfield(x,y,varnames=["x","y"])
         checkgrid(u,x,y)
-    if x.shape[0] != u.shape[0] or x.shape[1] != u.shape[1]:
-        raise IndexError("Grid and vector field must have the same dimensions!")
 
     # Sanity checks
-    try: rowstep/2.0
-    except: raise TypeError("rowstep has to be a positive integer!")
-    if rowstep < 1: raise ValueError("rowstep has to be >= 1!")
-    if rowstep >= u.shape[0]: raise ValueError("rowstep has to be less than u.shape[0]!")
-    if np.round(rowstep) != rowstep:
-        rowstep = np.round(rowstep)
-        print "WARNING: rowstep has to be an integer - using round(rowstep) = ",rowstep," now..."
-
-    try: colstep/2.0
-    except: raise TypeError("colstep has to be a positive integer!")
-    if colstep < 1: raise ValueError("colstep has to be >= 1!")
-    if colstep >= u.shape[1]: raise ValueError("colstep has to be less than u.shape[1]!")
-    if np.round(colstep) != colstep:
-        colstep = np.round(colstep)
-        print "WARNING: colstep has to be an integer - using round(colstep) = ",colstep," now..."
-
-    if str(interpolation) != interpolation:
-        raise TypeError("interpolation has to be a string!")
+    scalarcheck(rowstep,"rowstep",kind="int",bounds=[1,u.shape[0]])
+    scalarcheck(colstep,"colstep",kind="int",bounds=[1,u.shape[1]])
+    if not isinstance(interpolation,(str,unicode)):
+        raise TypeError('Input `interpolation` has to be a string!')
 
     # Create lattice
     wires = np.ones(u.shape)
@@ -280,36 +231,22 @@ def mywire(u,v,x=None,y=None,rowstep=1,colstep=1):
     """
 
     # Check the input vector field
-    checkinput(u,v)
+    checkfield(u,v,varnames=["u","v"])
     (M,N) = u.shape
 
     # Check the grid
-    if (x == None and y != None) or (x != None and y == None):
-        print "WARNING: Only x- or y-grid-data specified - switching to default domain [1,N]-by-[1,N]..."
+    if (x is None and y != None) or (x != None and y == None):
+        print "WARNING: Only x- or y-grid-data specified - switching to default domain `[1,N]`-by-`[1,N]`..."
         x,y = makegrid(N,M=M)
     elif x == None:
         x,y = makegrid(N,M=M)
     else:
+        checkfield(x,y,varnames=["x","y"])
         checkgrid(u,x,y)
-    if x.shape[0] != u.shape[0] or x.shape[1] != u.shape[1]:
-        raise IndexError("Grid and vector field must have the same dimensions!")
 
     # Sanity checks
-    try: rowstep/2.0
-    except: raise TypeError("rowstep has to be a positive integer!")
-    if rowstep < 1: raise ValueError("rowstep has to be >= 1!")
-    if rowstep >= u.shape[0]: raise ValueError("rowstep has to be less than u.shape[0]!")
-    if np.round(rowstep) != rowstep:
-        rowstep = np.round(rowstep)
-        print "WARNING: rowstep has to be an integer - using round(rowstep) = ",rowstep," now..."
-
-    try: colstep/2.0
-    except: raise TypeError("colstep has to be a positive integer!")
-    if colstep < 1: raise ValueError("colstep has to be >= 1!")
-    if colstep >= u.shape[1]: raise ValueError("colstep has to be less than u.shape[1]!")
-    if np.round(colstep) != colstep:
-        colstep = np.round(colstep)
-        print "WARNING: colstep has to be an integer - using round(colstep) = ",colstep," now..."
+    scalarcheck(rowstep,"rowstep",kind="int",bounds=[1,u.shape[0]])
+    scalarcheck(colstep,"colstep",kind="int",bounds=[1,u.shape[1]])
 
     # Draw the deformed grid
     ax = plt.gca(projection='3d')
@@ -320,32 +257,27 @@ def mywire(u,v,x=None,y=None,rowstep=1,colstep=1):
     return
 
 ##########################################################################################
-def checkinput(u,v):
+def checkfield(u,v,varnames=["u","v"]):
     """
     Perform sanity checks on the input vector field
     """
-
-    # Sanity checks
-    if type(u).__name__ != "ndarray":
-        raise TypeError("u has to be a NumPy 2darray!")
-    else:
-        if len(u.shape) > 2: raise ValueError("u has to be 2-dimensional!")
-        try: u.shape[1]
-        except: raise ValueError("u has to be a matrix!")
-        if np.isnan(u).max() == True or np.isinf(u).max() == True or np.isreal(u).min() == False:
-            raise ValueError("u must be real and must not contain NaNs or Infs!")
-
-    if type(v).__name__ != "ndarray":
-        raise TypeError("v has to be a NumPy 2darray!")
-    else:
-        if len(v.shape) > 2: raise ValueError("v has to be 2-dimensional!")
-        try: v.shape[1]
-        except: raise ValueError("v has to be a matrix!")
-        if np.isnan(v).max() == True or np.isinf(v).max() == True or np.isreal(v).min() == False:
-            raise ValueError("v must be real and must not contain NaNs or Infs!")
-
+    
+    for nk, arr in enumerate([u,v]):
+        varname = varnames[nk]
+        try:
+            sha = arr.shape
+        except:
+            raise TypeError('Input `'+varname+'` must be a NumPy array, not '+type(arr).__name__+'!')
+        if len(sha) != 2:
+            raise ValueError('Input `'+varname+'` must be a `M`-by-`N` NumPy array')
+        if (min(sha)==1) or (sha[0]!=sha[1]):
+            raise ValueError('Input `'+varname+'` must be a `M`-by-`N` NumPy array!')
+        if not plt.is_numlike(arr) or not np.isreal(arr).all():
+            raise TypeError('Input `'+varname+'` must be a real-valued `M`-by-`N` NumPy array!')
+        if np.isfinite(arr).min() == False:
+            raise ValueError('Input `'+varname+'` must be a real valued NumPy array without Infs or NaNs!')
     if u.shape[0] != v.shape[0] or u.shape[1] != v.shape[1]:
-        raise IndexError("u and v must have the same dimensions!")
+        raise ValueError("Inputs `"+varnames[0]+"` and `"+varnames[1]+"` must have the same dimension!")
         
     return
 
@@ -355,26 +287,28 @@ def checkgrid(u,x,y):
     Perform sanity checks on the grid
     """
 
-    # Sanity checks
-    if type(x).__name__ != "ndarray":
-        raise TypeError("x has to be a NumPy 2darray!")
-    else:
-        if len(x.shape) > 2: raise ValueError("x has to be 2-dimensional!")
-        try: x.shape[1]
-        except: raise ValueError("x has to be a matrix!")
-        if np.isnan(x).max() == True or np.isinf(x).max() == True or np.isreal(x).min() == False:
-            raise ValueError("x must be real and must not contain NaNs or Infs!")
-
-    if type(y).__name__ != "ndarray":
-        raise TypeError("y has to be a NumPy 2darray!")
-    else:
-        if len(y.shape) > 2: raise ValueError("y has to be 2-dimensional!")
-        try: y.shape[1]
-        except: raise ValueError("y has to be a matrix!")
-        if np.isnan(y).max() == True or np.isinf(y).max() == True or np.isreal(y).min() == False:
-            raise ValueError("y must be real and must not contain NaNs or Infs!")
-
+    if x.shape[0] != u.shape[0] or x.shape[1] != u.shape[1]:
+        raise ValueError("Grid and vector field must have the same dimensions!")
     if u.shape[0] != y.shape[0] or u.shape[1] != y.shape[1]:
-        raise IndexError("u and y must have the same dimensions!")
+        raise ValueError("Grid and vector field must have the same dimensions!")
         
     return
+
+##########################################################################################
+def scalarcheck(val,varname,kind=None,bounds=None):
+    """
+    Local helper function performing sanity checks on scalars
+    """
+
+    if not np.isscalar(val) or not plt.is_numlike(val) or not np.isreal(val).all():
+        raise TypeError("Input `"+varname+"` must be a real scalar!")
+    if not np.isfinite(val):
+        raise TypeError("Input `"+varname+"` must be finite!")
+
+    if kind == 'int':
+        if (round(val) != val):
+            raise ValueError("Input `"+varname+"` must be an integer!")
+
+    if bounds is not None:
+        if val < bounds[0] or val > bounds[1]:
+            raise ValueError("Input scalar `"+varname+"` must be between "+str(bounds[0])+" and "+str(bounds[1])+"!")

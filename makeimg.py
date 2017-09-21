@@ -2,7 +2,7 @@
 # 
 # Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]
 # Created: June  6 2012
-# Last modified: <2017-09-14 11:07:50>
+# Last modified: <2017-09-21 11:31:01>
 
 from __future__ import division
 
@@ -386,6 +386,9 @@ def gengrid(N):
     makegrid : found in the module myvec.makegrid
     """
 
+    # Semi-serious input checking
+    checkinput(N,0)
+
     # Set domain boundaries
     xmin = 1
     xmax = N
@@ -440,16 +443,22 @@ def checkinput(N,ns):
     Perform sanity checks on the inputs `N` and `ns`
     """
 
-    # Sanity checks
+    # Sanity checks for `N` and `ns`
+    names = ["N","ns"]
+    for nk, val in enumerate(N,ns):
+        if not np.isscalar(val) or not plt.is_numlike(val) or not np.isreal(val).all():
+            raise TypeError("Input `"+names[nk]+"` must be a real scalar!")
+        if not np.isfinite(val):
+            raise TypeError("Input `"+names[nk]+"` must be finite!")
+    
     # N
-    try: bad = (N != int(N))
-    except: raise TypeError("N has to be a positive integer!")
-    if N <= 1: raise ValueError("N has to be greater than 1!")
-    if bad: raise ValueError("N has to be an integer!")
+    if round(N) != N:
+        raise TypeError("`N` has to be a positive integer!")
+    if N <= 1:
+        raise ValueError("`N` has to be greater than 1!")
 
     # ns
-    try: float(ns)
-    except: raise TypeError("ns has to be the noise level, i.e. 0 <= ns <= 1!")
-    if ns < 0 or ns > 1: raise ValueError("ns has to be in [0,1]!")
+    if ns < 0 or ns > 1:
+        raise ValueError("`ns` has to be in [0,1]!")
 
     return
