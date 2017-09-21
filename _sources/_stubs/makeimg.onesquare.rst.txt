@@ -1,0 +1,6 @@
+makeimg\.onesquare
+==================
+
+.. currentmodule:: makeimg
+
+.. autofunction:: onesquare

@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>makeimg.gengrid</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="difftools.fidop2d" href="difftools.fidop2d.html" />
+    <link rel="prev" title="makeimg.myphantom" href="makeimg.myphantom.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span></span></a></h1>
+        <h2 class="heading"><span>makeimg.gengrid</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="makeimg.myphantom.html">makeimg.myphantom</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="difftools.fidop2d.html">difftools.fidop2d</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="makeimg-gengrid">
+<h1>makeimg.gengrid<a class="headerlink" href="#makeimg-gengrid" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="makeimg.gengrid">
+<code class="descclassname">makeimg.</code><code class="descname">gengrid</code><span class="sig-paren">(</span><em>N</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/makeimg.html#gengrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#makeimg.gengrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an <cite>N</cite>-by-<cite>N</cite> grid needed to construct most artificial images</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>N</strong> : int</p>
+<blockquote>
+<div><p>Image dimension</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>x</strong> : NumPy 2darray</p>
+<blockquote>
+<div><p>2D grid array of <cite>x</cite>-values on the domain <cite>[xmin,xmax]</cite>-by-<cite>[ymin,ymax]</cite></p>
+</div></blockquote>
+<p><strong>y</strong> : NumPy 2darray</p>
+<blockquote>
+<div><p>2D grid array of <cite>y</cite>-values on the domain <cite>[xmin,xmax]</cite>-by-<cite>[ymin,ymax]</cite></p>
+</div></blockquote>
+<p><strong>xmin</strong> : float</p>
+<blockquote>
+<div><p>Left boundary of the (rectangular) domain. By default <cite>xmin = 1</cite></p>
+</div></blockquote>
+<p><strong>xmax</strong> : float</p>
+<blockquote>
+<div><p>Right boundary of the (rectangular) domain. By default <cite>xmax = N</cite></p>
+</div></blockquote>
+<p><strong>ymin</strong> : float</p>
+<blockquote>
+<div><p>The lower boundary of the (rectangular) domain. By default <cite>ymin = 1</cite></p>
+</div></blockquote>
+<p><strong>ymax</strong> : float</p>
+<blockquote>
+<div><p>The upper boundary of the (rectangular) domain. By default <cite>ymax = N</cite></p>
+</div></blockquote>
+<p><strong>x1</strong> : NumPy 1darray</p>
+<blockquote>
+<div><p>The <cite>x</cite>-spacing on the domain</p>
+</div></blockquote>
+<p><strong>y1</strong> : NumPy 1darray</p>
+<blockquote class="last">
+<div><p>The <cite>y</cite>-spacing on the domain</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">meshgrid</span></code></dt>
+<dd>NumPy&#8217;s <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html">meshgrid</a></dd>
+<dt><code class="xref py py-obj docutils literal"><span class="pre">makegrid</span></code></dt>
+<dd>found in the module myvec.makegrid</dd>
+</dl>
+</div>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="makeimg.myphantom.html">makeimg.myphantom</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="difftools.fidop2d.html">difftools.fidop2d</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2017, Stefan Fuertinger.
+      Last updated on Sep 21, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>myat.myat</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="imtools.imwrite" href="imtools.imwrite.html" />
+    <link rel="prev" title="chambolle.chambolle" href="chambolle.chambolle.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span></span></a></h1>
+        <h2 class="heading"><span>myat.myat</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="chambolle.chambolle.html">chambolle.chambolle</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="imtools.imwrite.html">imtools.imwrite</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="myat-myat">
+<h1>myat.myat<a class="headerlink" href="#myat-myat" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="myat.myat">
+<code class="descclassname">myat.</code><code class="descname">myat</code><span class="sig-paren">(</span><em>f</em>, <em>ep</em>, <em>nu=1</em>, <em>de=1</em>, <em>la=1</em>, <em>tol=0.0001</em>, <em>itmax=100</em>, <em>iplot=False</em>, <em>Dx=None</em>, <em>Dy=None</em>, <em>Lh=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/myat.html#myat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#myat.myat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the Ambrosio&#8211;Tortorelli approximation of the Mumford&#8211;Shah functional</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>f</strong> : NumPy 2darray</p>
+<blockquote>
+<div><p>Raw (noisy) input image to be segmented. Note that <cite>f</cite> has to be square!</p>
+</div></blockquote>
+<p><strong>ep</strong> : float</p>
+<blockquote>
+<div><p>Positive edge-&#8220;thickness&#8221; parameter in the approximation functional. For <cite>ep -&gt; 0</cite>
+the Ambrosio&#8211;Tortorelli approximation Gamma-converges to the Mumford&#8211;Shah 
+functional (see Notes below).</p>
+</div></blockquote>
+<p><strong>nu</strong> : float</p>
+<blockquote>
+<div><p>Positive parameter determining the influence of the Ambrosio&#8211;Tortorelli terms in the 
+functional.</p>
+</div></blockquote>
+<p><strong>de</strong> : float</p>
+<blockquote>
+<div><p>Positive parameter influencing the smoothness regularization term for <cite>u</cite> in the functional.</p>
+</div></blockquote>
+<p><strong>la</strong> : float</p>
+<blockquote>
+<div><p>Positive parameter weighing the data fidelity term in the functional.</p>
+</div></blockquote>
+<p><strong>tol</strong> : float</p>
+<blockquote>
+<div><p>Error tolerance for the stopping criterion satisfying <cite>0 &lt; tol &lt;&lt; 1</cite>.</p>
+</div></blockquote>
+<p><strong>itmax</strong> : int</p>
+<blockquote>
+<div><p>Integer, the maximal number of iterations.</p>
+</div></blockquote>
+<p><strong>iplot</strong> : bool</p>
+<blockquote>
+<div><p>Switch to turn interactive plotting on (<cite>iplot=True</cite>) or off (<cite>iplot=False</cite>)</p>
+</div></blockquote>
+<p><strong>Dx</strong> : NumPy/SciPy matrix</p>
+<blockquote>
+<div><p>Disrecte derivative operator in direction <cite>x</cite> (foward differences are recommended). 
+Note that if <cite>f</cite> is <cite>N</cite>-by-<cite>N</cite> then <cite>Dx</cite> has to be <cite>N**2</cite>-by-<cite>N**2</cite>!</p>
+</div></blockquote>
+<p><strong>Dy</strong> : NumPy/SciPy matrix</p>
+<blockquote>
+<div><p>Discrete derivative operator in direction <cite>y</cite> (forward differences are recommended). 
+Note that if <cite>f</cite> is <cite>N</cite>-by-<cite>N</cite> then <cite>Dy</cite> has to be <cite>N**2</cite>-by-<cite>N**2</cite>!</p>
+</div></blockquote>
+<p><strong>Lh</strong> : NumPy/SciPy matrix</p>
+<blockquote>
+<div><p>Discrete Laplace operator (central differences are recommended). 
+Note that if <cite>f</cite> is <cite>N</cite>-by-<cite>N</cite> then <cite>Dy</cite> has to be <cite>N**2</cite>-by-<cite>N**2</cite>!</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>u</strong> : NumPy 2darray</p>
+<blockquote>
+<div><p>The smoothed version of <cite>f</cite>.</p>
+</div></blockquote>
+<p><strong>v</strong> : NumPy 2darray</p>
+<blockquote class="last">
+<div><p>The fuzzy edge map of <cite>f</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The Ambrosio&#8211;Tortorelli functional <a class="reference internal" href="#r7" id="id1">[R7]</a> is given by</p>
+<div class="math">
+\[J_{\varepsilon}[u,v] = \int_{\Omega}\frac{\nu\varepsilon}{2}|\nabla v|^2 + \frac{\nu}{2\varepsilon}(1-v)^2 + \frac{\delta}{2} v^2|\nabla u|^2 + \frac{\lambda}{2} (u-f)^2 dx\]</div>
+<p>The associated Euler&#8211;Lagrange equations are</p>
+<div class="math">
+\[\begin{split}\begin{align}
+-\delta \mathrm{div}(v^2 \nabla u) + \lambda u &amp;= \lambda f \\
+\frac{\partial u}{\partial n} &amp;= 0
+\end{align}\end{split}\]</div>
+<p>and</p>
+<div class="math">
+\[\begin{split}\begin{align}
+-\nu\varepsilon\Delta v + \frac{\nu}{\varepsilon}v + \delta v|\nabla u|^2 &amp;= \frac{\nu}{\varepsilon} \\
+\frac{\partial u}{\partial n} &amp;= 0
+\end{align}\end{split}\]</div>
+<p>The alternate optimization algorithm is initialized using</p>
+<div class="math">
+\[\begin{split}\begin{align}
+u_0 &amp;= f \\
+v_0 &amp;= 1/(1 + \delta \frac{\varepsilon}{\nu} |\nabla f|^2)
+\end{align}\end{split}\]</div>
+<p>It can be shown that <span class="math">\(J_{\epsilon}\)</span> Gamma-converges to the Mumford&#8211;Shah functional 
+for <span class="math">\(\varepsilon \rightarrow 0\)</span> (see, e.g., <a class="reference internal" href="#r8" id="id2">[R8]</a>).</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="r7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R7]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> L. Ambrosio and V.M. Tortorelli. Approximation of functionals depending on
+jumps by elliptic functionals via Gamma-convergence. Communications on Pure and
+Applied Mathematics, 43:999-1036, 1990.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="r8" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R8]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> G. Aubert and P. Kornprobst: &#8220;Mathematical Problems in Image Processing: Partial Differential 
+Equations and the Calculus of Variations&#8221;, Springer 2006.</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="chambolle.chambolle.html">chambolle.chambolle</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="imtools.imwrite.html">imtools.imwrite</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2017, Stefan Fuertinger.
+      Last updated on Sep 21, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>makeimg.fivesquares</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="makeimg.spikes" href="makeimg.spikes.html" />
+    <link rel="prev" title="makeimg.onesquare" href="makeimg.onesquare.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span></span></a></h1>
+        <h2 class="heading"><span>makeimg.fivesquares</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="makeimg.onesquare.html">makeimg.onesquare</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="makeimg.spikes.html">makeimg.spikes</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="makeimg-fivesquares">
+<h1>makeimg.fivesquares<a class="headerlink" href="#makeimg-fivesquares" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="makeimg.fivesquares">
+<code class="descclassname">makeimg.</code><code class="descname">fivesquares</code><span class="sig-paren">(</span><em>N</em>, <em>ns=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/makeimg.html#fivesquares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#makeimg.fivesquares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a piece-wise constant gray-scale image: five squares of different intensities on black background</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>N</strong> : int</p>
+<blockquote>
+<div><p>Image dimension (image is an <cite>N</cite>-by-<cite>N</cite> array)</p>
+</div></blockquote>
+<p><strong>ns</strong> : float</p>
+<blockquote>
+<div><p>Noise level applied to the image, i.e., 0.1 = 10% noise, 0.2 = 20% noise, etc. Thus <cite>ns</cite> has to 
+satisfy <cite>0 &lt;= ns &lt;= 1</cite>. By default <cite>ns = 0.0</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>It</strong> : NumPy 2darray</p>
+<blockquote class="last">
+<div><p>Array representation of the image (2D array)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="makeimg.onesquare.html#makeimg.onesquare" title="makeimg.onesquare"><code class="xref py py-obj docutils literal"><span class="pre">onesquare</span></code></a></dt>
+<dd>another piece-wise constant test image</dd>
+<dt><a class="reference internal" href="makeimg.myphantom.html#makeimg.myphantom" title="makeimg.myphantom"><code class="xref py py-obj docutils literal"><span class="pre">myphantom</span></code></a></dt>
+<dd>Python implementation of the Shepp&#8211;Logan phantom</dd>
+</dl>
+</div>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="makeimg.onesquare.html">makeimg.onesquare</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="makeimg.spikes.html">makeimg.spikes</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2017, Stefan Fuertinger.
+      Last updated on Sep 21, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

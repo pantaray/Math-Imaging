@@ -1,0 +1,6 @@
+imtools\.imwrite
+================
+
+.. currentmodule:: imtools
+
+.. autofunction:: imwrite

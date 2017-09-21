@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>difftools</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span></span></a></h1>
+        <h2 class="heading"><span>difftools</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for difftools</h1><div class="highlight"><pre>
+<span></span><span class="c1"># difftools.py - Several useful utilities for numerical differentiation</span>
+<span class="c1"># </span>
+<span class="c1"># Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]</span>
+<span class="c1"># Created: June 13 2012</span>
+<span class="c1"># Last modified: &lt;2017-09-21 12:08:48&gt;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">spdiags</span><span class="p">,</span> <span class="n">eye</span><span class="p">,</span> <span class="n">kron</span> 
+
+<span class="c1">##########################################################################################</span>
+<div class="viewcode-block" id="fidop2d"><a class="viewcode-back" href="../_stubs/difftools.fidop2d.html#difftools.fidop2d">[docs]</a><span class="k">def</span> <span class="nf">fidop2d</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">drt</span><span class="o">=</span><span class="s1">&#39;xy&#39;</span><span class="p">,</span> <span class="n">fds</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute 2D finite difference operators</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N : int</span>
+<span class="sd">        Positive integer holding the grid dimension (has to be square, i.e.</span>
+<span class="sd">        `N`-by-`N`!)</span>
+<span class="sd">    drt : str</span>
+<span class="sd">        String determining the direction of the discrete derivatives. </span>
+<span class="sd">        Can be either &#39;x&#39;, &#39;y&#39; or &#39;xy&#39;. </span>
+<span class="sd">    fds : str</span>
+<span class="sd">        String determining the employed finite difference scheme. Can be </span>
+<span class="sd">        either &#39;c&#39; for centered, &#39;f&#39; for forward or &#39;b&#39; for backward. </span>
+<span class="sd">       </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    D : SciPy sparse matrix/matrices</span>
+<span class="sd">        Depending on the given input one or two sparse matrices </span>
+<span class="sd">        corresponding to the wanted discrete derivative operators are </span>
+<span class="sd">        returned. </span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    The command </span>
+
+<span class="sd">    &gt;&gt;&gt; Dx,Dy = fidop2d(N) </span>
+
+<span class="sd">    returns the sparse `N**2`-by-`N**2` matrices `Dx` and `Dy` such that `Dh` defined by</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; Dh = np.hstack([Dx,Dy])</span>
+
+<span class="sd">    is the discrete gradient operator in lexicographic </span>
+<span class="sd">    ordering for a function `F` given on a grid of size `N`-by-`N`.</span>
+<span class="sd">    The matrix `Dx` is a discrete approximation of the first-order derivative operator </span>
+<span class="sd">    in `x`-direction, Analogously, `Dy` discretizes the first order derivative operator </span>
+<span class="sd">    in `y`-direction. The spacing between points in each direction is assumed to be one </span>
+<span class="sd">    (i.e. the step size `h = 1`). </span>
+<span class="sd">    </span>
+<span class="sd">    The command </span>
+
+<span class="sd">    &gt;&gt;&gt; D = fidop2d(N,drt) </span>
+
+<span class="sd">    returns the sparse `N**2`-by-`N**2` matrix `D` corresponding to the discrete derivative </span>
+<span class="sd">    operator in direction `drt` in lexicographic ordering. The string `drt` has to be either &#39;x&#39; (default)</span>
+<span class="sd">    , &#39;y&#39; or &#39;xy&#39;. Note: only &#39;xy&#39; will return two matrices, namely `Dx`, `Dy`. </span>
+
+<span class="sd">    The command </span>
+
+<span class="sd">    &gt;&gt;&gt; D = fidop2d(N,drt,fds) </span>
+
+<span class="sd">    returns sparse the `N**2`-by-`N**2` matrix `D` corresponding to the discrete derivative </span>
+<span class="sd">    operator in direction `drt` in lexicographic ordering using the finite difference scheme `fds`. </span>
+<span class="sd">    The string `fds` can either be &#39;c&#39; (centered differences, in cells, default), </span>
+<span class="sd">    &#39;f&#39; (forward differences, in interfaces) or &#39;b&#39; (backward differences, in interfaces). </span>
+
+<span class="sd">    To discretize first order differential operators on a 4-by-4 grid in both `x`- and `y`-directions </span>
+<span class="sd">    using forward differences use</span>
+
+<span class="sd">    &gt;&gt;&gt; Dx,Dy = fidop2d(4,fds=&#39;f&#39;)</span>
+
+<span class="sd">    To get only the discrete first order differential operator in `y`-direction on a grid of size `N` use</span>
+
+<span class="sd">    &gt;&gt;&gt; Dy = fidop2d(N,&#39;y&#39;)</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    For clarity here some comments on the rationale behind the code. </span>
+
+<span class="sd">    *The Laplacian*</span>
+
+<span class="sd">    If `Dxf` and `Dyf` are computed using forward differences, i.e.</span>
+
+<span class="sd">    &gt;&gt;&gt; Dxf,Dyf = fidop2d(N,&#39;xy&#39;,&#39;f&#39;)</span>
+
+<span class="sd">    then the discrete Laplacian `Lh` based on centered differences is</span>
+<span class="sd">    obtained by </span>
+
+<span class="sd">    &gt;&gt;&gt; Lh = -(Dxf.T*Dxf + Dyf.T*Dyf)</span>
+
+<span class="sd">    or analogously for backward differences, </span>
+
+<span class="sd">    &gt;&gt;&gt; Dxb,Dyb = fidop2d(N,&#39;xy&#39;,&#39;b&#39;)</span>
+
+<span class="sd">    then</span>
+
+<span class="sd">    &gt;&gt;&gt; Lh = Dxb.T*Dxb + Dyb.T*Dyb</span>
+<span class="sd">    </span>
+<span class="sd">    *The Divergence*</span>
+
+<span class="sd">    Note adjoints: for :math:`p` in </span>
+<span class="sd">    :math:`H_0(\\mathrm{div}):=\\{p \\in L^2(\\Omega)` | div :math:`(p) \\in L^2(\\Omega), pn = 0` </span>
+<span class="sd">    on the boundary of :math:`\\Omega\\}` we have</span>
+
+<span class="sd">    .. math:: </span>
+
+<span class="sd">       \\begin{align}</span>
+<span class="sd">       \\int_{\\Omega} \\nabla u\\cdot p dx &amp;=  \\int_{\\Omega} u p \\cdot  n dS - \\int_{\\Omega} u \\textrm{ div }(p) dx\\\\</span>
+<span class="sd">                                     &amp; = 0 -\\int_{\\Omega} u \\textrm{ div }(p) dx</span>
+<span class="sd">       \\end{align}</span>
+
+<span class="sd">    or in short :math:`\\textrm{div}^\\ast = -\\nabla`. Hence for a spatial discretization take </span>
+<span class="sd">    `Div_h ~ -Dh.T` as approximation for the divergence. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Sanity checks for `N`</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">plt</span><span class="o">.</span><span class="n">is_numlike</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input `N` must be a real scalar!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input `N` must be finite!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">!=</span> <span class="n">N</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`N` has to be a positive integer!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`N` has to be greater than 1!&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Sanity checks for `drt`</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drt</span><span class="p">,(</span><span class="nb">str</span><span class="p">,</span><span class="n">unicode</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input `drt` has to be a string!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">drt</span> <span class="o">!=</span> <span class="s1">&#39;x&#39;</span> <span class="ow">and</span> <span class="n">drt</span> <span class="o">!=</span> <span class="s1">&#39;y&#39;</span> <span class="ow">and</span> <span class="n">drt</span> <span class="o">!=</span> <span class="s1">&#39;xy&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input `drt` has to be either &#39;x&#39;, &#39;y&#39; or &#39;xy&#39;&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">drt</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span> <span class="ow">or</span> <span class="n">drt</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="n">myout</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">myout</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="c1"># Sanity checks for `fds`</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fds</span><span class="p">,(</span><span class="nb">str</span><span class="p">,</span><span class="n">unicode</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input `fds` has to be a string!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fds</span> <span class="o">!=</span> <span class="s1">&#39;c&#39;</span> <span class="ow">and</span> <span class="n">fds</span> <span class="o">!=</span> <span class="s1">&#39;b&#39;</span> <span class="ow">and</span> <span class="n">fds</span> <span class="o">!=</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input `fds` has to be either &#39;c&#39; (centered), &#39;b&#39; (backward) or &#39;f&#39; (forward)&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Initialize vector of ones needed to build matrices</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">));</span>
+
+    <span class="c1"># Building blocks for the operators</span>
+    <span class="k">if</span> <span class="n">fds</span><span class="o">==</span><span class="s1">&#39;c&#39;</span><span class="p">:</span>
+        <span class="c1"># Centered differences</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">spdiags</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">e</span><span class="p">,</span><span class="n">e</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;lil&#39;</span><span class="p">);</span>
+        <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">;</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">;</span> <span class="n">A</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">;</span> <span class="n">A</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">A</span><span class="p">;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">fds</span><span class="o">==</span><span class="s1">&#39;f&#39;</span><span class="p">:</span>
+        <span class="c1"># Forward differences</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">spdiags</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">e</span><span class="p">,</span><span class="n">e</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;lil&#39;</span><span class="p">);</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Backward differences</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">spdiags</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">e</span><span class="p">,</span><span class="n">e</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;lil&#39;</span><span class="p">);</span>
+        <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+
+    <span class="c1"># Second building block needed: the identity</span>
+    <span class="n">IN</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">);</span>
+
+    <span class="c1"># Compute output matrix/matrices</span>
+    <span class="k">if</span> <span class="n">myout</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># Only one output: determine direction</span>
+        <span class="k">if</span> <span class="n">drt</span><span class="o">==</span><span class="s1">&#39;x&#39;</span><span class="p">:</span>
+            <span class="c1"># x-direction</span>
+            <span class="k">return</span> <span class="n">kron</span><span class="p">(</span><span class="n">IN</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># y-direction</span>
+            <span class="k">return</span> <span class="n">kron</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">IN</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Two outputs: order of directions is always d/dx,d/dy]</span>
+        <span class="k">return</span> <span class="n">kron</span><span class="p">(</span><span class="n">IN</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">),</span> <span class="n">kron</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">IN</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span></div>
+
+<span class="c1">##########################################################################################</span>
+<div class="viewcode-block" id="myff2n"><a class="viewcode-back" href="../_stubs/difftools.myff2n.html#difftools.myff2n">[docs]</a><span class="k">def</span> <span class="nf">myff2n</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Give factor settings for a two-level full factorial design</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int</span>
+<span class="sd">        Number of factors</span>
+<span class="sd">       </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dff2 : NumPy 2darray</span>
+<span class="sd">        An `m`-by-`n` array of factor settings </span>
+
+<span class="sd">    Examples    </span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; dFF2 = ff2n(3)</span>
+<span class="sd">    &gt;&gt;&gt; dFF2</span>
+<span class="sd">        array([[ 0.,  0.,  0.],</span>
+<span class="sd">               [ 0.,  0.,  1.],</span>
+<span class="sd">               [ 0.,  1.,  0.],</span>
+<span class="sd">               [ 0.,  1.,  1.],</span>
+<span class="sd">               [ 1.,  0.,  0.],</span>
+<span class="sd">               [ 1.,  0.,  1.],</span>
+<span class="sd">               [ 1.,  1.,  0.],</span>
+<span class="sd">               [ 1.,  1.,  1.]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check correctness of input</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">plt</span><span class="o">.</span><span class="n">is_numlike</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input `n` must be a real scalar!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input `n` must be finite!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`n` has to be a positive integer!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`n` has to be greater than 0!&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Output array dff2 has 2^n rows </span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">n</span>
+    <span class="n">ncycles</span> <span class="o">=</span> <span class="n">rows</span>
+    <span class="n">dff2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">rows</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>
+
+    <span class="c1"># This is adapted from the MATLAB source file ff2n.m</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ncycles</span> <span class="o">=</span> <span class="n">ncycles</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="n">nreps</span> <span class="o">=</span> <span class="n">rows</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">ncycles</span><span class="p">)</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">nreps</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">),:]</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">ncycles</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">dff2</span><span class="p">[:,</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dff2</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2017, Stefan Fuertinger.
+      Last updated on Sep 21, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

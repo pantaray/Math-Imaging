@@ -26,20 +26,17 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="chambolle.chambolle" href="_stubs/chambolle.chambolle.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body role="document">
-      <div class="header" role="banner"><h1 class="heading"><a href="#">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span></span></a></h1>
         <h2 class="heading"><span>Math Imaging Code Documentation</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        <a class="uplink" href="#">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="_stubs/chambolle.chambolle.html">chambolle.chambolle</a>&#160;&#160;»
+        <a class="uplink" href="index.html">Contents</a>
         </p>
 
       </div>
@@ -73,25 +70,25 @@ refer to my corresponding <a class="reference external" href="https://github.com
 <td><strong>Brief Description</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><a class="reference external" href="#imageproc"><strong>Mathematical Image Processing</strong></a></td>
-<td><a class="reference internal" href="#chambolle-sec"><span class="std std-ref">Chambolle&#8217;s Algorithm</span></a></td>
+<td><a class="reference internal" href="index.html#chambolle-sec"><span class="std std-ref">Chambolle&#8217;s Algorithm</span></a></td>
 <td>Chambolle&#8217;s Algorithm for TV denoising</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#ambrosio-sec"><span class="std std-ref">Ambrosio&#8211;Tortorelli Algorithm</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="index.html#ambrosio-sec"><span class="std std-ref">Ambrosio&#8211;Tortorelli Algorithm</span></a></td>
 <td>Ambrosio&#8211;Tortorelli algorithm to solve
 the Mumford-Shah segmentation problem</td>
 </tr>
 <tr class="row-even"><td rowspan="2"><a class="reference external" href="#imagemanip"><strong>Image Manipulation</strong></a></td>
-<td><a class="reference internal" href="#imtools-sec"><span class="std std-ref">Load/Save/Show Image</span></a></td>
+<td><a class="reference internal" href="index.html#imtools-sec"><span class="std std-ref">Load/Save/Show Image</span></a></td>
 <td>Image manipulation in Python</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#makeim-sec"><span class="std std-ref">Construct Images</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="index.html#makeim-sec"><span class="std std-ref">Construct Images</span></a></td>
 <td>Create prototype test images</td>
 </tr>
 <tr class="row-even"><td rowspan="2"><a class="reference external" href="#misc"><strong>Miscellaneous</strong></a></td>
-<td><a class="reference internal" href="#numdiff-sec"><span class="std std-ref">Numerical Differentiation</span></a></td>
+<td><a class="reference internal" href="index.html#numdiff-sec"><span class="std std-ref">Numerical Differentiation</span></a></td>
 <td>Assemble discrete differential operators</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#vecplot-sec"><span class="std std-ref">Visualization of Vector Fields</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="index.html#vecplot-sec"><span class="std std-ref">Visualization of Vector Fields</span></a></td>
 <td>Plot 2D vector fields</td>
 </tr>
 </tbody>
@@ -105,7 +102,7 @@ the Mumford-Shah segmentation problem</td>
 <div class="figure align-center" id="id1" style="width: 60%">
 <a class="reference internal image-reference" href="_images/chambolle.png"><img alt="Chambolle" src="_images/chambolle.png" style="height: 200px;" /></a>
 <p class="caption"><span class="caption-text">Exemplary approximate solution to the total variation denoising problem computed by
-Chambolle&#8217;s projection algorithm. An artificial test image (compare <a class="reference internal" href="#makeim-sec"><span class="std std-ref">Construct Images</span></a>) was
+Chambolle&#8217;s projection algorithm. An artificial test image (compare <a class="reference internal" href="index.html#makeim-sec"><span class="std std-ref">Construct Images</span></a>) was
 corrupted by 5% additive Gaussian noise (left). The middle panel shows the denoised
 image obtained by using Chambolle&#8217;s approach, the <span class="math">\(L^1\)</span>-norm of the associated dual variable
 is shown in the right panel.</span></p>
@@ -128,7 +125,7 @@ of the <a class="reference external" href="http://en.wikipedia.org/wiki/Total_va
 <span id="ambrosio-sec"></span><h2>Ambrosio&#8211;Tortorelli Segmentation Algorithm<a class="headerlink" href="#ambrosio-tortorelli-segmentation-algorithm" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-center" id="id2" style="width: 60%">
 <a class="reference internal image-reference" href="_images/ambrosio.png"><img alt="Ambrosio" src="_images/ambrosio.png" style="height: 200px;" /></a>
-<p class="caption"><span class="caption-text">Exemplary Ambrosio&#8211;Tortorelli segmentation of the <code class="docutils literal"><span class="pre">bars</span></code> image (compare <a class="reference internal" href="#makeim-sec"><span class="std std-ref">Construct Images</span></a>).
+<p class="caption"><span class="caption-text">Exemplary Ambrosio&#8211;Tortorelli segmentation of the <code class="docutils literal"><span class="pre">bars</span></code> image (compare <a class="reference internal" href="index.html#makeim-sec"><span class="std std-ref">Construct Images</span></a>).
 Shown are the original image (left), the computed approximation (middle) and the
 associated phase function (right).</span></p>
 </div>
@@ -156,7 +153,7 @@ for image segmentation.</p>
 <span id="imtools-sec"></span><h2>Load/Save/Show Images<a class="headerlink" href="#load-save-show-images" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-right" id="id3" style="width: 20%">
 <a class="reference internal image-reference" href="_images/edges.png"><img alt="Edges" src="_images/edges.png" style="height: 200px;" /></a>
-<p class="caption"><span class="caption-text">An edge map of the phantom image (compare <a class="reference internal" href="#makeim-sec"><span class="std std-ref">Construct Images</span></a>) visualized as red overlay
+<p class="caption"><span class="caption-text">An edge map of the phantom image (compare <a class="reference internal" href="index.html#makeim-sec"><span class="std std-ref">Construct Images</span></a>) visualized as red overlay
 using the function <a class="reference internal" href="_stubs/imtools.blendedges.html#imtools.blendedges" title="imtools.blendedges"><code class="xref py py-func docutils literal"><span class="pre">blendedges()</span></code></a></span></p>
 </div>
 <p>Routines to read, write and show images (stored as <a class="reference external" href="http://numpy.org">NumPy</a> arrays).</p>
@@ -278,9 +275,7 @@ regular grids.</p>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        <a class="uplink" href="#">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="_stubs/chambolle.chambolle.html">chambolle.chambolle</a>&#160;&#160;»
+        <a class="uplink" href="index.html">Contents</a>
         </p>
 
       </div>

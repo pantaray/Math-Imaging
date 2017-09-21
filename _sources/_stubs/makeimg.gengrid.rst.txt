@@ -1,0 +1,6 @@
+makeimg\.gengrid
+================
+
+.. currentmodule:: makeimg
+
+.. autofunction:: gengrid

@@ -1,0 +1,6 @@
+difftools\.fidop2d
+==================
+
+.. currentmodule:: difftools
+
+.. autofunction:: fidop2d

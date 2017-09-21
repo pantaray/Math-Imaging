@@ -1,0 +1,6 @@
+myvec\.mygrid
+=============
+
+.. currentmodule:: myvec
+
+.. autofunction:: mygrid

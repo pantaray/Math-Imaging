@@ -1,0 +1,6 @@
+chambolle\.chambolle
+====================
+
+.. currentmodule:: chambolle
+
+.. autofunction:: chambolle

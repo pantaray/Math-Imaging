@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>imtools.recmovie</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="makeimg.onesquare" href="makeimg.onesquare.html" />
+    <link rel="prev" title="imtools.blendedges" href="imtools.blendedges.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span></span></a></h1>
+        <h2 class="heading"><span>imtools.recmovie</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="imtools.blendedges.html">imtools.blendedges</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="makeimg.onesquare.html">makeimg.onesquare</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="imtools-recmovie">
+<h1>imtools.recmovie<a class="headerlink" href="#imtools-recmovie" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="imtools.recmovie">
+<code class="descclassname">imtools.</code><code class="descname">recmovie</code><span class="sig-paren">(</span><em>figobj=None</em>, <em>movie=None</em>, <em>savedir=None</em>, <em>fps=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/imtools.html#recmovie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#imtools.recmovie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save Matplotlib figures and generate a movie sequences</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>figobj</strong> : Matplotlib figure</p>
+<blockquote>
+<div><p>Figure to base the movie on</p>
+</div></blockquote>
+<p><strong>movie</strong> : str</p>
+<blockquote>
+<div><p>Filename of the generated movie</p>
+</div></blockquote>
+<p><strong>savedir</strong> : str</p>
+<blockquote>
+<div><p>Output directory for video file or name of directory of/for source image files</p>
+</div></blockquote>
+<p><strong>fps</strong> : int</p>
+<blockquote>
+<div><p>Target frames per second</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Nothing</strong> : None</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">Matplotlib</span></code></dt>
+<dd>a <a class="reference external" href="http://matplotlib.org/examples/animation/index.html">collection of codes</a> illustrating how to use animation in Matplotlib</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<p>The command</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">recmovie</span><span class="p">(</span><span class="n">figobj</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>saves the Matplotlib figure-object <cite>figobj</cite> in the default directory <cite>_tmp</cite> as png-image. 
+If the default directory is empty the image will be named <cite>_tmp0000.png</cite>, 
+otherwise the highest number in the png-file-names incremented by one will be
+used as filename.</p>
+<p>Use</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">recmovie</span><span class="p">(</span><span class="n">figobj</span><span class="p">,</span><span class="n">savedir</span><span class="o">=</span><span class="s2">&quot;somedir&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>to save the Matplotlib figure-object <cite>figobj</cite> in the directory defined by the string 
+<cite>savedir</cite>. If the directory does not exist, it will be created. 
+If the directory <cite>savedir</cite> is empty the image will be named <cite>_tmp0000.png</cite>, otherwise the 
+highest number in the png-file-names incremented by one will be used as filename.</p>
+<p>The command <cite>recmovie()</cite> will attempt to use <a class="reference external" href="http://en.wikipedia.org/wiki/MEncoder">mencoder</a>
+to generate an avi-movie composed of the 
+png-images found in the default directory <cite>_tmp</cite>. The movie&#8217;s default name will be
+composed of the default prefix <cite>_tmp</cite> and the current date and time. 
+After the movie has been generated the default-directory <cite>_tmp</cite> and its contents 
+will be deleted.</p>
+<p>Use</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">recmovie</span><span class="p">(</span><span class="n">movie</span><span class="o">=</span><span class="s2">&quot;somename&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>to launch mencoder and generate an avi-video composed of the png-images found in the 
+default directory <cite>_tmp</cite>. 
+The string <cite>movie</cite> will be used as filename for the generated movie (in the above example
+a file <cite>somename.avi</cite> will be created). 
+After the movie has been generated the default-directory <cite>_tmp</cite> and its contents 
+will be deleted. Similarly</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">recmovie</span><span class="p">(</span><span class="n">savedir</span><span class="o">=</span><span class="s2">&quot;somedir&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>will generate an avi-movie composed of the png-images found in the directory specified 
+by the string <cite>savedir</cite>. The movie&#8217;s name is given by the prefix <cite>_tmp</cite> and the current 
+date and time. 
+After the movie has been generated it will be moved to the directory <cite>savedir</cite>. If 
+a movie-file of the same name exists in <cite>savedir</cite> a <em>WARNING</em> is printed and the movie 
+will not be moved. Analogously,</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">recmovie</span><span class="p">(</span><span class="n">movie</span><span class="o">=</span><span class="s2">&quot;somename&quot;</span><span class="p">,</span><span class="n">savedir</span><span class="o">=</span><span class="s2">&quot;somedir&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>will generate an avi-movie named &#8220;somename&#8221; composed of the png-images found in the 
+directory specified by the string <cite>savedir</cite>. 
+After the movie has been generated it will be moved to the directory <cite>savedir</cite>. If 
+a movie-file of the same name exists in <cite>savedir</cite> a <em>WARNING</em> is printed and the movie 
+will not be moved.</p>
+<p><strong>Note:</strong> the command</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">recmovie</span><span class="p">(</span><span class="n">figobj</span><span class="p">,</span><span class="n">movie</span><span class="o">=</span><span class="s2">&quot;somename&quot;</span><span class="p">,</span><span class="n">savedir</span><span class="o">=</span><span class="s2">&quot;somedir&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>will ONLY save the Matplotlib-figure-object <cite>figobj</cite> in the directory defined by the 
+string <cite>savdir</cite>. The optional argument <cite>movie</cite> will be ignored.</p>
+<p><strong>Note:</strong> the default-directory, image-format and movie-type can be changed in the source code 
+by editing the variables <cite>prefix</cite>, <cite>imgtype</cite> and <cite>movtype</cite>.</p>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="imtools.blendedges.html">imtools.blendedges</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="makeimg.onesquare.html">makeimg.onesquare</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2017, Stefan Fuertinger.
+      Last updated on Sep 21, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

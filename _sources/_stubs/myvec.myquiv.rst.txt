@@ -1,0 +1,6 @@
+myvec\.myquiv
+=============
+
+.. currentmodule:: myvec
+
+.. autofunction:: myquiv

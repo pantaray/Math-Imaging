@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>myvec.mywire</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="myvec.mygrid" href="myvec.mygrid.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span></span></a></h1>
+        <h2 class="heading"><span>myvec.mywire</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="myvec.mygrid.html">myvec.mygrid</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="myvec-mywire">
+<h1>myvec.mywire<a class="headerlink" href="#myvec-mywire" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="myvec.mywire">
+<code class="descclassname">myvec.</code><code class="descname">mywire</code><span class="sig-paren">(</span><em>u</em>, <em>v</em>, <em>x=None</em>, <em>y=None</em>, <em>rowstep=1</em>, <em>colstep=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/myvec.html#mywire"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#myvec.mywire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a 2D vector field as 3D wire-frame using Matplotlib&#8217;s <cite>plot_wireframe</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>u</strong> : NumPy 2darray</p>
+<blockquote>
+<div><p><cite>x</cite> components of the vector field <cite>w(x,y) = (u(x,y),v(x,y))</cite>. Note that <cite>u</cite> has to be 
+a 2D array of the same dimension as <cite>v</cite>.</p>
+</div></blockquote>
+<p><strong>v</strong> : NumPy 2darray</p>
+<blockquote>
+<div><p><cite>y</cite> components of the vector field <cite>w(x,y) = (u(x,y),v(x,y))</cite>. Note that <cite>v</cite> has to be 
+a 2D array of the same dimension as <cite>u</cite>.</p>
+</div></blockquote>
+<p><strong>x</strong> : NumPy 2darray</p>
+<blockquote>
+<div><p>2D grid array of <cite>x</cite>-values on the domain of <cite>w(x,y)</cite>. By default it is assumed that 
+<cite>w</cite> is defined on <cite>[1,N]</cite>-by-<cite>[1,N]</cite></p>
+</div></blockquote>
+<p><strong>y</strong> : NumPy 2darray</p>
+<blockquote>
+<div><p>2D grid array of <cite>y</cite>-values on the domain of <cite>w(x,y)</cite>. By default it is assumed that 
+<cite>w</cite> is defined on <cite>[1,N]</cite>-by-<cite>[1,N]</cite></p>
+</div></blockquote>
+<p><strong>rowstep</strong> : int</p>
+<blockquote>
+<div><p>Array row stride (step size) used to generate the wire-frame plot (see <cite>plot_wireframe</cite>&#8216;s 
+documentation for details). Default value is 1.</p>
+</div></blockquote>
+<p><strong>colstep</strong> : int</p>
+<blockquote>
+<div><p>Array column stride (step size) used to generate the wire-frame plot (see <cite>plot_wireframe</cite>&#8216;s 
+documentation for details). Default value is 1.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Nothing</strong> : None</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">plot_wireframe</span></code></dt>
+<dd>in the <a class="reference external" href="http://matplotlib.org/mpl_toolkits/mplot3d/api.html#mpl_toolkits.mplot3d.axes3d.Axes3D.plot_wireframe">Matplotlib documentation</a></dd>
+</dl>
+</div>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="myvec.mygrid.html">myvec.mygrid</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2017, Stefan Fuertinger.
+      Last updated on Sep 21, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

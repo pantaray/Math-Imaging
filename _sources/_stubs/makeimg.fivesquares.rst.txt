@@ -1,0 +1,6 @@
+makeimg\.fivesquares
+====================
+
+.. currentmodule:: makeimg
+
+.. autofunction:: fivesquares

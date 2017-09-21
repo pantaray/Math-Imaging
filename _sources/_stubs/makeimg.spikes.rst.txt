@@ -1,0 +1,6 @@
+makeimg\.spikes
+===============
+
+.. currentmodule:: makeimg
+
+.. autofunction:: spikes

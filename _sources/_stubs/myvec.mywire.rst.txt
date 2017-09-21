@@ -1,0 +1,6 @@
+myvec\.mywire
+=============
+
+.. currentmodule:: myvec
+
+.. autofunction:: mywire

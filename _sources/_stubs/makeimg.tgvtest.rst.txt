@@ -1,0 +1,6 @@
+makeimg\.tgvtest
+================
+
+.. currentmodule:: makeimg
+
+.. autofunction:: tgvtest

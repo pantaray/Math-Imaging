@@ -1,0 +1,6 @@
+imtools\.normalize
+==================
+
+.. currentmodule:: imtools
+
+.. autofunction:: normalize

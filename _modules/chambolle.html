@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chambolle</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span></span></a></h1>
+        <h2 class="heading"><span>chambolle</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for chambolle</h1><div class="highlight"><pre>
+<span></span><span class="c1"># chambolle.py - Solve nonlinear TV-denoising using Chambolle&#39;s projection algorithm</span>
+<span class="c1"># </span>
+<span class="c1"># Author: Stefan Fuertinger [stefan.fuertinger@gmx.at]</span>
+<span class="c1"># Created: August 22 2012</span>
+<span class="c1"># Last modified: &lt;2017-09-14 11:02:15&gt;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
+
+<span class="kn">from</span> <span class="nn">difftools</span> <span class="k">import</span> <span class="n">fidop2d</span>
+
+<span class="c1">##########################################################################################</span>
+<div class="viewcode-block" id="chambolle"><a class="viewcode-back" href="../_stubs/chambolle.chambolle.html#chambolle.chambolle">[docs]</a><span class="k">def</span> <span class="nf">chambolle</span><span class="p">(</span><span class="n">ut</span><span class="p">,</span> <span class="n">Dx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0e-5</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">itmax</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.0e-3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solve the nonlinear TV-denoising problem using Chambolle&#39;s projection algorithm </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ut : NumPy 2darray</span>
+<span class="sd">        Raw grey-scale image to denoise. Note that `ut` has to be square!</span>
+<span class="sd">    Dx : NumPy/SciPy matrix</span>
+<span class="sd">        Discrete derivative operator in direction `x` (forward differences are recommended). </span>
+<span class="sd">        Note that if `ut` is `N`-by-`N` then `Dx` has to be `N**2`-by-`N**2`!</span>
+<span class="sd">    Dy : NumPy/SciPy matrix</span>
+<span class="sd">        Discrete derivative operator in direction `y` (forward differences are recommended). </span>
+<span class="sd">        Note that if `ut` is `N`-by-`N` then `Dy` has to be `N**2`-by-`N**2`!</span>
+<span class="sd">    mu : non-negative float</span>
+<span class="sd">        Regularization parameter in the TV functional. Note that `mu &gt;= 0` has to hold!</span>
+<span class="sd">    dt : positive float</span>
+<span class="sd">        Pseudo time step. Note that `dt` has to satisfy `0 &lt; dt &lt; 1`. </span>
+<span class="sd">    itmax : positive integer</span>
+<span class="sd">        Maximal number of Chambolle iterations. Note that `itmax` has to be &gt; 0!</span>
+<span class="sd">    tol : positive float</span>
+<span class="sd">        Error tolerance in Chambolle iterations. Note that `tol` has to satisfy `0 &lt; tol &lt;&lt; 1`!</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    u : NumPy 2darray</span>
+<span class="sd">        Denoised Chambolle-image. Has the same dimension as the input image `ut`. </span>
+<span class="sd">    p : NumPy 3darray</span>
+<span class="sd">        Dual variable (&quot;Chambolle-edge-set&quot;). If `ut` is `N`-by-`N` then `p` is `2`-by-`N`-by-`N`, i.e. </span>
+<span class="sd">        a tensor. </span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] A. Chambolle. An algorithm for total variation minimization and applications.</span>
+<span class="sd">           Journal of Mathematical Imaging and Vision, 20(1-2):89-97, 2004.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Sanity checks</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ut</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;ndarray&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;ut has to be a (square) NumPy ndarray!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ut</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ut has to be 2-dimensional!&quot;</span><span class="p">)</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span> <span class="n">M</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ut has to be square!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">N</span><span class="o">!=</span><span class="n">M</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ut has to be square!&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">Dx</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Dx</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;matrix&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Dx has to be a SciPy/NumPy matrix!&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">NN</span> <span class="o">=</span> <span class="n">Dx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">NN</span> <span class="o">!=</span> <span class="n">Dx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dx has to be a square matrix!&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">NN</span> <span class="o">!=</span> <span class="n">N</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dx has to be of dimension </span><span class="si">%s</span><span class="s2">**2 = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="nb">repr</span><span class="p">(</span><span class="n">N</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="n">Dy</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Dy</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;matrix&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Dy has to be a SciPy/NumPy matrix!&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">NN</span> <span class="o">=</span> <span class="n">Dy</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">NN</span> <span class="o">!=</span> <span class="n">Dy</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dy has to be a square matrix!&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">NN</span> <span class="o">!=</span> <span class="n">N</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dy has to be of dimension </span><span class="si">%s</span><span class="s2">**2 = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="nb">repr</span><span class="p">(</span><span class="n">N</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+        
+    <span class="k">try</span><span class="p">:</span> <span class="n">mu</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;mu has to be a non-negative scalar!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mu</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mu has to be non-negative!&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span> <span class="n">dt</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;dt has to be a positive scalar!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">dt</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dt has to be 0 &lt; dt &lt; 1!&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span> <span class="n">itmax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">itmax</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;itmax has to be a positive scalar!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">itmax</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;itmax has to be &gt; 0!&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span> <span class="n">tol</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tol</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;tol has to be a positive scalar!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tol</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">tol</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tol has to be 0 &lt; tol &lt;&lt; 1!&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Now start to actually do something: get squared image dimension</span>
+    <span class="n">NN</span> <span class="o">=</span> <span class="n">N</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="c1"># If code was called without operators generate them</span>
+    <span class="k">if</span> <span class="n">Dx</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">Dy</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Dx</span><span class="p">,</span><span class="n">Dy</span> <span class="o">=</span> <span class="n">fidop2d</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="s1">&#39;xy&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Convert the image to a vector</span>
+    <span class="n">ut</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Initialize necessary variables</span>
+    <span class="n">ux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NN</span><span class="p">,))</span>
+    <span class="n">uy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NN</span><span class="p">,))</span>
+    <span class="n">gu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NN</span><span class="p">,))</span>
+    <span class="n">dn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NN</span><span class="p">,))</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NN</span><span class="p">,))</span>
+    <span class="n">du</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NN</span><span class="p">,))</span>
+    <span class="n">u</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NN</span><span class="p">,))</span>
+    <span class="n">p</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+
+    <span class="c1"># Iteration parameters</span>
+    <span class="n">relerr</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">tol</span>
+    <span class="n">res</span>    <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">relres</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">it</span>     <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ep1</span>    <span class="o">=</span> <span class="mf">1.0e-8</span>
+    <span class="n">nt</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">ut</span><span class="p">)</span>
+
+    <span class="c1"># Start Chambolle Iteration</span>
+    <span class="k">while</span> <span class="n">relerr</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">it</span> <span class="o">&lt;=</span> <span class="n">itmax</span><span class="p">:</span>
+
+        <span class="c1"># Update iteration counter</span>
+        <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># grad u</span>
+        <span class="n">ux</span> <span class="o">=</span> <span class="n">Dx</span><span class="o">*</span><span class="n">u</span>
+        <span class="n">uy</span> <span class="o">=</span> <span class="n">Dy</span><span class="o">*</span><span class="n">u</span>
+
+        <span class="c1"># |grad u|</span>
+        <span class="n">gu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ux</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">uy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># p = (1 + dt grad u)p / (1 + dt |grad u|)</span>
+        <span class="n">dn</span>     <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">dt</span><span class="o">*</span><span class="n">gu</span>
+        <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">+</span> <span class="n">dt</span><span class="o">*</span><span class="n">ux</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">))</span><span class="o">/</span><span class="n">dn</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+        <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">+</span> <span class="n">dt</span><span class="o">*</span><span class="n">uy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">))</span><span class="o">/</span><span class="n">dn</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+
+        <span class="c1"># div p</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="o">-</span><span class="n">Dx</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">Dy</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># residual</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mu</span><span class="o">*</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">dp</span><span class="p">)</span> <span class="o">-</span> <span class="n">ut</span><span class="p">))</span>
+
+        <span class="c1"># u = ut + mu * div p</span>
+        <span class="n">du</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">u</span>  <span class="o">=</span> <span class="n">ut</span><span class="o">/</span><span class="n">mu</span> <span class="o">+</span> <span class="n">dp</span>
+        <span class="n">du</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="n">du</span>
+
+        <span class="c1"># Relative error</span>
+        <span class="n">relerr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">ep1</span><span class="p">)</span>
+        <span class="n">relerr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">du</span><span class="p">)</span><span class="o">/</span><span class="n">relerr</span> 
+        <span class="n">relres</span> <span class="o">=</span> <span class="n">res</span><span class="o">/</span><span class="n">nt</span>
+
+        <span class="c1"># Print output to prompt</span>
+        <span class="nb">print</span> <span class="s2">&quot;it = </span><span class="si">%s</span><span class="s2">, |du|/|u|= </span><span class="si">%s</span><span class="s2">, |res|/|ut| = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">it</span><span class="p">),</span><span class="nb">repr</span><span class="p">(</span><span class="n">relerr</span><span class="p">),</span><span class="nb">repr</span><span class="p">(</span><span class="n">relres</span><span class="p">))</span>
+
+        <span class="c1"># Modify stopping criterion</span>
+        <span class="n">relerr</span> <span class="o">=</span> <span class="n">relres</span>
+
+    <span class="c1"># Convert u back to matrix and compute Chambolle image</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">*</span><span class="n">mu</span>
+
+    <span class="k">return</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2017, Stefan Fuertinger.
+      Last updated on Sep 21, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

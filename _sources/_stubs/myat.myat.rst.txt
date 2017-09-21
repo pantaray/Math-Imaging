@@ -1,0 +1,6 @@
+myat\.myat
+==========
+
+.. currentmodule:: myat
+
+.. autofunction:: myat

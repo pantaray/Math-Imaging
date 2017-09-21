@@ -1,0 +1,6 @@
+makeimg\.myphantom
+==================
+
+.. currentmodule:: makeimg
+
+.. autofunction:: myphantom

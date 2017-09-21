@@ -1,0 +1,6 @@
+difftools\.myff2n
+=================
+
+.. currentmodule:: difftools
+
+.. autofunction:: myff2n

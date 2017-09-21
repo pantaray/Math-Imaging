@@ -1,0 +1,6 @@
+makeimg\.manysquares
+====================
+
+.. currentmodule:: makeimg
+
+.. autofunction:: manysquares

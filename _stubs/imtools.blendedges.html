@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>imtools.blendedges</title>
+    
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="imtools.recmovie" href="imtools.recmovie.html" />
+    <link rel="prev" title="imtools.normalize" href="imtools.normalize.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span></span></a></h1>
+        <h2 class="heading"><span>imtools.blendedges</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="imtools.normalize.html">imtools.normalize</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="imtools.recmovie.html">imtools.recmovie</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="imtools-blendedges">
+<h1>imtools.blendedges<a class="headerlink" href="#imtools-blendedges" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="imtools.blendedges">
+<code class="descclassname">imtools.</code><code class="descname">blendedges</code><span class="sig-paren">(</span><em>Im</em>, <em>chim</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/imtools.html#blendedges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#imtools.blendedges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Superimpose a (binary) edge set on an gray-scale image using Matplotlib&#8217;s <cite>imshow</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>Im: NumPy 2darray</strong></p>
+<blockquote>
+<div><p>Grayscale image (has to be a 2D array)</p>
+</div></blockquote>
+<p><strong>chim: NumPy 2darray</strong></p>
+<blockquote>
+<div><p>Binary edge map (has to be a 2D array). Note that the edge map must be binary, i.e., 
+it must only contain the values 0 and 1</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Nothing</strong> : None</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">imshow</span></code></dt>
+<dd>in the <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow">Matplotlib documentation</a></dd>
+<dt><code class="xref py py-obj docutils literal"><span class="pre">Stackoverflow</span></code></dt>
+<dd><a class="reference external" href="http://stackoverflow.com/questions/2495656/variable-alpha-blending-in-pylab">This submission</a> illustrates how to use variable alpha blending in Matplotlib</dd>
+</dl>
+</div>
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="imtools.normalize.html">imtools.normalize</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="imtools.recmovie.html">imtools.recmovie</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2017, Stefan Fuertinger.
+      Last updated on Sep 21, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

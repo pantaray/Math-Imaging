@@ -1,0 +1,6 @@
+imtools\.blendedges
+===================
+
+.. currentmodule:: imtools
+
+.. autofunction:: blendedges

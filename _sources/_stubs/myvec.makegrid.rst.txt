@@ -1,0 +1,6 @@
+myvec\.makegrid
+===============
+
+.. currentmodule:: myvec
+
+.. autofunction:: makegrid

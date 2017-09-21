@@ -1,0 +1,6 @@
+makeimg\.bars
+=============
+
+.. currentmodule:: makeimg
+
+.. autofunction:: bars
